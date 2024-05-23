@@ -27,8 +27,8 @@
       };
     },
     methods: {
-        handleSearch(searchTerm) {
-  this.filteredJobs = this.jobs.filter(job =>
+     handleSearch(searchTerm) {
+     this.filteredJobs = this.jobs.filter(job =>
     (job.title?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
     (job.company?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
