@@ -53,13 +53,13 @@ INSTALLED_APPS = [
 
 # Configure authentication classes
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',  # Add TokenAuthentication
-        'rest_framework.authentication.SessionAuthentication',  # Add SessionAuthentication
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Allow authenticated users by default
-    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Use JWT authentication
+        'rest_framework.authentication.SessionAuthentication',  # Optionally, use session-based authentication
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # Require authenticated users for all API endpoints
+    ),
 }
 
 # JWT settings
@@ -67,6 +67,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Customize token lifetime if needed
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),  # Customize refresh token lifetime if needed
 }
+
 
 
 MIDDLEWARE = [
