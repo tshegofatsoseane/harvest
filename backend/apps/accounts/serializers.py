@@ -2,6 +2,7 @@
 
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from django.contrib.auth import authenticate
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -13,7 +14,6 @@ class LoginSerializer(serializers.Serializer):
 
         if username and password:
             user = authenticate(username=username, password=password)
-
             if user:
                 if user.is_active:
                     return user
