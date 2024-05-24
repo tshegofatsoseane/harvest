@@ -27,7 +27,7 @@
           <form class="sign-in" @submit.prevent="handleSignIn" v-show="!signUp">
             <h2>Sign In</h2>
             <div>Use your account</div>
-            <input type="text" v-model="signUpForm.name" placeholder="Name" />
+            <input type="text" v-model="signInForm.name" placeholder="Username" />
             <input type="password" v-model="signInForm.password" placeholder="Password" />
             <a href="#">Forgot your password?</a>
             <button type="submit">Sign In</button>
@@ -39,6 +39,7 @@
   
   <script>
   import axios from 'axios';
+  import { useRouter } from 'vue-router';
   
   export default {
     name: 'SignupPage',
@@ -55,6 +56,10 @@
           password: ''
         }
       };
+    },
+    setup() {
+      const router = useRouter();
+      return { router };
     },
     methods: {
       async handleSignUp() {
@@ -86,14 +91,15 @@
       async handleSignIn() {
         try {
           const response = await axios.post('http://127.0.0.1:8000/api/accounts/login/', {
-            username: this.signUpForm.name,
+            username: this.signInForm.name,
             password: this.signInForm.password
           });
   
           if (response && response.data) {
             console.log(response.data);
             alert('Sign in successful!');
-            // handle successful login, e.g., store tokens, redirect, etc.
+            // Redirect to homepage
+            this.$router.push('/');
           } else {
             console.error('Unexpected response structure', response);
             alert('Sign in failed due to unexpected response structure.');
