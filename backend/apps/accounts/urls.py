@@ -1,9 +1,8 @@
+# accounts/urls.py
+
 from django.urls import path
-from . import views
-from .views import UserSignup
+from .views import UserRegistrationAPIView
 
 urlpatterns = [
-    path('signup/', UserSignup.as_view(), name='user_signup'),
-    path('login/', views.LoginView.as_view(), name='login'),
-    # Other URL patterns for the accounts app
+    path('signup/', UserRegistrationAPIView.as_view(), name='user-registration'),
 ]

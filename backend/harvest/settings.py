@@ -53,13 +53,13 @@ INSTALLED_APPS = [
 
 # Configure authentication classes
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Use JWT authentication
-        'rest_framework.authentication.SessionAuthentication',  # Optionally, use session-based authentication
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',  # Require authenticated users for all API endpoints
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # Add TokenAuthentication
+        'rest_framework.authentication.SessionAuthentication',  # Add SessionAuthentication
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Allow authenticated users by default
+    ],
 }
 
 # JWT settings
