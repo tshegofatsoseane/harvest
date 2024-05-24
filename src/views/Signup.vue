@@ -27,7 +27,7 @@
           <form class="sign-in" @submit.prevent="handleSignIn" v-show="!signUp">
             <h2>Sign In</h2>
             <div>Use your account</div>
-            <input type="email" v-model="signInForm.email" placeholder="Email" />
+            <input type="text" v-model="signUpForm.name" placeholder="Name" />
             <input type="password" v-model="signInForm.password" placeholder="Password" />
             <a href="#">Forgot your password?</a>
             <button type="submit">Sign In</button>
@@ -86,7 +86,7 @@
       async handleSignIn() {
         try {
           const response = await axios.post('http://127.0.0.1:8000/api/accounts/login/', {
-            username: this.signInForm.email,
+            username: this.signUpForm.name,
             password: this.signInForm.password
           });
   
