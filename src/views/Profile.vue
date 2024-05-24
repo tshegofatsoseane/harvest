@@ -44,49 +44,36 @@
 
   </template>
   
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    name: 'ProfilePage',
-    data() {
-      return {
-        profile: {
-          picture: '',
-          username: '',
-          email: '',
-          bio: '',
-          location: '',
-          birth_date: ''
-        }
-      };
-    },
-    created() {
-      // Call the function to fetch profile with token included in headers
-      this.fetchProfileWithToken();
-    },
-    methods: {
-      async fetchProfileWithToken() {
-        try {
-          // Get the token from localStorage (assuming you store it there after login)
-          const token = localStorage.getItem('token');
-  
-          // Include the token in the request headers
-          const response = await axios.get('http://127.0.0.1:8000/api/accounts/profile/', {
-            headers: {
-              Authorization: `Bearer ${token}` // Add the token to the Authorization header
-            }
-          });
-  
-          // Update the profile data
-          this.profile = response.data;
-        } catch (error) {
-          console.error('Failed to fetch profile:', error);
-        }
+<script>
+import axios from 'axios';
+
+export default {
+  name: 'ProfilePage',
+  data() {
+    return {
+      profile: {}
+    };
+  },
+  created() {
+    this.fetchProfile();
+  },
+  methods: {
+    async fetchProfile() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://127.0.0.1:8000/api/accounts/profile/', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        this.profile = response.data;
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
       }
     }
-  };
-  </script>
+  }
+};
+</script>
   <style>
   .profile-page {
   max-width: 800px;
