@@ -98,7 +98,7 @@
           if (response && response.data) {
             console.log(response.data);
             alert('Sign in successful!');
-            // Redirect to homepage
+            // Redirect to homepage on successfull login
             this.$router.push('/');
           } else {
             console.error('Unexpected response structure', response);
