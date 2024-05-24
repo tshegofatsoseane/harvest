@@ -1,9 +1,22 @@
 # views.py in accounts app
 
 from rest_framework import generics, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserSerializer, LoginSerializer, TokenPairSerializer
+from .serializers import UserSerializer, LoginSerializer, TokenPairSerializer, UserRegistrationSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import UserSerializer
+
+class UserSignup(APIView):
+    def post(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserRegistrationView(generics.CreateAPIView):
+    serializer_class = UserRegistrationSerializer
 
 
 class SignUpView(generics.CreateAPIView):
