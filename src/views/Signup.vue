@@ -16,21 +16,21 @@
               </div>
             </div>
           </div>
-          <form class="sign-up" action="#" v-show="signUp">
+          <form class="sign-up" @submit.prevent="handleSignUp" v-show="signUp">
             <h2>Create login</h2>
             <div>Use your email for registration</div>
-            <input type="text" placeholder="Name" />
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <button>Sign Up</button>
+            <input type="text" v-model="signUpForm.name" placeholder="Name" />
+            <input type="email" v-model="signUpForm.email" placeholder="Email" />
+            <input type="password" v-model="signUpForm.password" placeholder="Password" />
+            <button type="submit">Sign Up</button>
           </form>
-          <form class="sign-in" action="#" v-show="!signUp">
+          <form class="sign-in" @submit.prevent="handleSignIn" v-show="!signUp">
             <h2>Sign In</h2>
             <div>Use your account</div>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
+            <input type="email" v-model="signInForm.email" placeholder="Email" />
+            <input type="password" v-model="signInForm.password" placeholder="Password" />
             <a href="#">Forgot your password?</a>
-            <button>Sign In</button>
+            <button type="submit">Sign In</button>
           </form>
         </div>
       </article>
@@ -38,19 +38,84 @@
   </template>
   
   <script>
+  import axios from 'axios';
+  
   export default {
     name: 'SignupPage',
     data() {
       return {
-        signUp: false
+        signUp: false,
+        signUpForm: {
+          name: '',
+          email: '',
+          password: ''
+        },
+        signInForm: {
+          email: '',
+          password: ''
+        }
       };
+    },
+    methods: {
+      async handleSignUp() {
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/api/accounts/signup/', {
+            username: this.signUpForm.name,
+            email: this.signUpForm.email,
+            password: this.signUpForm.password
+          });
+  
+          if (response && response.data) {
+            console.log(response.data);
+            alert('Sign up successful! Please sign in.');
+            this.signUp = false;
+          } else {
+            console.error('Unexpected response structure', response);
+            alert('Sign up failed due to unexpected response structure.');
+          }
+        } catch (error) {
+          if (error.response && error.response.data) {
+            console.error(error.response.data);
+            alert(`Sign up failed: ${error.response.data.detail || 'Unknown error'}`);
+          } else {
+            console.error('Network or server error', error);
+            alert('Sign up failed due to a network or server error.');
+          }
+        }
+      },
+      async handleSignIn() {
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/api/accounts/login/', {
+            username: this.signInForm.email,
+            password: this.signInForm.password
+          });
+  
+          if (response && response.data) {
+            console.log(response.data);
+            alert('Sign in successful!');
+            // handle successful login, e.g., store tokens, redirect, etc.
+          } else {
+            console.error('Unexpected response structure', response);
+            alert('Sign in failed due to unexpected response structure.');
+          }
+        } catch (error) {
+          if (error.response && error.response.data) {
+            console.error(error.response.data);
+            alert(`Sign in failed: ${error.response.data.detail || 'Unknown error'}`);
+          } else {
+            console.error('Network or server error', error);
+            alert('Sign in failed due to a network or server error.');
+          }
+        }
+      }
     }
   };
   </script>
   
   <style>
+  /* Styles are the same as you provided */
   .center-container {
-    margin-top: -50px;  
+    margin-top: -50px;
     display: flex;
     justify-content: center;
     align-items: center;
