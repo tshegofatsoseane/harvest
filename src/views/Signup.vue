@@ -101,7 +101,7 @@
             localStorage.setItem('token', response.data.access);
             alert('Sign in successful!');
             // Redirect to homepage on successful login
-            this.$router.push('/');
+            this.$router.push('/profile');
           } else {
             console.error('Unexpected response structure', response);
             alert('Sign in failed due to unexpected response structure.');
