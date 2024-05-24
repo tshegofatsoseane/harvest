@@ -22,9 +22,10 @@
         </div>
       </nav>
         
-    <div class="profile-page">
-      <h1>Profile</h1>
-      <div class="profile-section">
+<div class="profile-page">
+    <h1 class="page-title">Profile</h1>
+    <div class="profile-card">
+      <div class="profile-card-content">
         <div class="profile-picture">
           <img :src="profile.picture" alt="Profile Picture">
         </div>
@@ -37,6 +38,7 @@
         </div>
       </div>
     </div>
+  </div>
     </div>
 
 
@@ -60,12 +62,23 @@
       };
     },
     created() {
-      this.fetchProfile();
+      // Call the function to fetch profile with token included in headers
+      this.fetchProfileWithToken();
     },
     methods: {
-      async fetchProfile() {
+      async fetchProfileWithToken() {
         try {
-          const response = await axios.get('http://127.0.0.1:8000/api/accounts/profile/');
+          // Get the token from localStorage (assuming you store it there after login)
+          const token = localStorage.getItem('token');
+  
+          // Include the token in the request headers
+          const response = await axios.get('http://127.0.0.1:8000/api/accounts/profile/', {
+            headers: {
+              Authorization: `Bearer ${token}` // Add the token to the Authorization header
+            }
+          });
+  
+          // Update the profile data
           this.profile = response.data;
         } catch (error) {
           console.error('Failed to fetch profile:', error);
@@ -74,31 +87,54 @@
     }
   };
   </script>
-  
   <style>
   .profile-page {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-  }
-  
-  .profile-section {
-    display: flex;
-    align-items: center;
-  }
-  
-  .profile-picture {
-    margin-right: 20px;
-  }
-  
-  .profile-picture img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-  }
-  
-  .profile-info p {
-    margin: 5px 0;
-  }
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  color: #009345; /* App's primary color */
+  margin-bottom: 20px;
+}
+
+.profile-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+}
+
+.profile-card-content {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.profile-picture {
+  margin-right: 20px;
+}
+
+.profile-picture img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info p {
+  margin: 5px 0;
+  color: #333; /* Text color */
+}
+
+.profile-info strong {
+  color: #009345; /* App's primary color */
+}
   </style>
   
