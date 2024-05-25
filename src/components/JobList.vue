@@ -8,17 +8,32 @@
         <p class="location"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</p>
         <p class="type"><i class="fas fa-briefcase"></i> {{ job.type }}</p>
       </div>
+      <button @click="toggleSaved(job)" class="save-button" :class="{ saved: job.saved }">
+        <i :class="job.saved ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
+        {{ job.saved ? 'Saved' : 'Save' }}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
-  name: 'JobList',
   props: {
     jobs: {
       type: Array,
       required: true,
+    },
+  },
+  methods: {
+    ...mapActions(['updateJob']),
+    toggleSaved(job) {
+      this.updateJob({
+        jobId: job.id,
+        newStatus: job.status,
+        isSaved: !job.saved,
+      });
     },
   },
 };
@@ -65,9 +80,45 @@ export default {
   text-transform: uppercase;
 }
 
-/* Font Awesome icons */
 .job-details i {
   margin-right: 5px;
   color: #42b983;
+}
+
+.save-button {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #42b983;
+  color: #42b983;
+  border-radius: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 14px;
+}
+
+.save-button:hover {
+  background-color: #f0f0f0;
+}
+
+.save-button i {
+  margin-right: 5px;
+}
+
+.save-button.saved {
+  background-color: #42b983;
+  color: #fff;
+}
+
+.save-button.saved i {
+  color: #fff;
+}
+
+.no-jobs {
+  text-align: center;
+  color: #666;
+  font-size: 18px;
+  margin-top: 20px;
 }
 </style>
