@@ -1,7 +1,10 @@
 <template>
   <div>
+    <!-- Navigation -->
     <nav class="nav">
+      <!-- Logo -->
       <div class="logo">Harvest</div>
+      <!-- Navigation Links -->
       <div class="nav-links">
         <router-link to="/" class="nav-link">
           <i class="fas fa-home"></i> Home
@@ -20,41 +23,90 @@
         </router-link>
       </div>
     </nav>
+    
+    <!-- Home Page Content -->
     <div class="home-page">
+      <!-- Hero Section -->
       <Hero @search="handleSearch" />
+      <!-- Main Content Sections -->
       <div class="main-content">
+        <!-- Job Listings -->
         <section class="job-listings">
           <h2>Job Listings</h2>
-          <JobList :jobs="filteredJobs" @selectJob="selectJob" />
+          <JobList :jobs="filteredJobs" @selectJob="selectJob" @jobSaved="handleJobSaved" />
         </section>
-        <section class="job-details">
-          <h2>Job Details</h2>
-          <div v-if="selectedJob" class="details-card">
-            <h3>{{ selectedJob.title }}</h3>
-            <p><strong>Company:</strong> {{ selectedJob.company }}</p>
-            <p><strong>Location:</strong> {{ selectedJob.location }}</p>
-            <p><strong>Type:</strong> {{ selectedJob.type }}</p>
-            <p><strong>Description:</strong> {{ selectedJob.description }}</p>
-          </div>
-          <div v-else>
-            <p>Select a job to see the details.</p>
+
+        
+<!-- Empty Section -->
+<section class="empty-section">
+  <h2>Job Statuses</h2>
+  <div class="job-statuses-row">
+    <div class="job-status">
+      
+      <section class="saved-jobs">
+        <i class="fas fa-bookmark"></i>  <h2>Saved Jobs ({{ savedJobs.length }})</h2>
+          <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
+          <div v-else class="saved-job-cards">
+            <div v-for="job in savedJobs" :key="job.id" class="saved-job-card">
+              <h3>{{ job.title }}</h3>
+              <p>Job ID: {{ job.id }}</p>
+              <button @click="applyForJob(job)">Apply Now</button>
+            </div>
           </div>
         </section>
+
+    </div>
+    <div class="job-status">
+      <i class="fas fa-spinner"></i> In Progress: {{ jobStatusCount('in-progress') }}
+    </div>
+    <div class="job-status">
+      <i class="fas fa-check-circle"></i> Applied: {{ jobStatusCount('applied') }}
+    </div>
+    <div class="job-status">
+      <i class="fas fa-envelope"></i> Awaiting Response: {{ jobStatusCount('awaiting-response') }}
+    </div>
+  </div>
+</section>
+
+
+        <!-- Job Statuses -->
         <section class="job-statuses">
           <h2>Job Statuses</h2>
           <ul>
-            <li>Saved: {{ jobStatusCount('saved') }}</li>
-            <li>In Progress: {{ jobStatusCount('in-progress') }}</li>
-            <li>Applied: {{ jobStatusCount('applied') }}</li>
-            <li>Awaiting Response: {{ jobStatusCount('awaiting-response') }}</li>
+            <li><i class="fas fa-bookmark"></i> Saved: {{ jobStatusCount('saved') }}</li>
+            <li><i class="fas fa-spinner"></i> In Progress: {{ jobStatusCount('in-progress') }}</li>
+            <li><i class="fas fa-check-circle"></i> Applied: {{ jobStatusCount('applied') }}</li>
+            <li><i class="fas fa-envelope"></i> Awaiting Response: {{ jobStatusCount('awaiting-response') }}</li>
           </ul>
         </section>
+      </div>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span @click="showModal = false" class="close">&times;</span>
+        <h2>{{ selectedJob.title }}</h2>
+        <p><strong>Company:</strong> {{ selectedJob.company }}</p>
+        <p><strong>Location:</strong> {{ selectedJob.location }}</p>
+        <p><strong>Type:</strong> {{ selectedJob.type }}</p>
+        <p><strong>Posted:</strong> {{ selectedJob.posted }}</p>
+        <div class="job-description">
+          <p><strong>Description:</strong></p>
+          <p>{{ selectedJob.description }}</p>
+        </div>
+        <p><strong>Category:</strong> {{ selectedJob.category }}</p>
+        <p><strong>Salary:</strong> {{ selectedJob.salary }}</p>
+        <p><strong>Contract Time:</strong> {{ selectedJob.contract_time }}</p>
+        <p><strong>Redirect URL:</strong> <a :href="selectedJob.redirect_url">{{ selectedJob.redirect_url }}</a></p>
+        <p><strong>Company URL:</strong> <a :href="selectedJob.company_url">{{ selectedJob.company_url }}</a></p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Hero from '@/components/Hero.vue';
 import JobList from '@/components/JobList.vue';
 
@@ -68,8 +120,24 @@ export default {
     return {
       jobs: [],
       filteredJobs: [],
+      savedJobs: [], //array to store saved jobs
       selectedJob: null,
+      showModal: false,
     };
+  },
+  computed: {
+    computed: {
+    ...mapState(['jobs', 'savedJobs', 'filteredJobs']),
+  },
+    appliedJobs() {
+      return this.jobs.filter(job => job.status === 'applied');
+    },
+    inProgressJobs() {
+      return this.jobs.filter(job => job.status === 'in-progress');
+    },
+    awaitingResponseJobs() {
+      return this.jobs.filter(job => job.status === 'awaiting-response');
+    },
   },
   methods: {
     handleSearch(searchTerm) {
@@ -78,7 +146,18 @@ export default {
         (job.company?.toLowerCase() || '').includes(searchTerm.toLowerCase())
       );
     },
+    handleJobSaved(job) {
+      // add job to savedJobs array only if it doesn't already exist (i may need to review this)
+      if (!this.savedJobs.find(savedJob => savedJob.id === job.id)) {
+        this.savedJobs.push(job);
+      }
+    },
+    applyForJob(job) {
+      //i'll add logic to apply for a job later
+      console.log(`Applying for job: ${job.title}`);
+    },
     fetchJobs() {
+      // fetch jobs when component is created
       const API_KEY = 'c5ac254dbcd7ffd334a80c341683b63e';
       const API_URL = `https://api.adzuna.com/v1/api/jobs/za/search/1?app_id=8b4326c4&app_key=${API_KEY}&results_per_page=100`;
 
@@ -91,24 +170,43 @@ export default {
             company: job.company.display_name,
             location: job.location.display_name,
             type: job.contract_type,
-            description: job.description, // Assuming the API returns a description field
+            description: job.description,
+            category: job.category.label,
+            salary: job.salary,
+            posted: job.created,
+            contract_time: job.contract_time,
+            latitude: job.latitude,
+            longitude: job.longitude,
+            redirect_url: job.redirect_url,
+            company_url: job.company.url,
+            companyLogo: job.company.company_logo, 
           }));
-          this.filteredJobs = this.jobs; // Initialize filtered jobs with all jobs
+          this.filteredJobs = this.jobs; // initialize filtered jobs with all jobs
         })
         .catch(error => console.error(error));
     },
     selectJob(job) {
       this.selectedJob = job;
+      this.showModal = true;
     },
     jobStatusCount(status) {
       return this.jobs.filter(job => job.status === status).length;
     },
+    // method to save a job
+    saveJob(job) {
+      // check if the job is already saved
+      if (!this.savedJobs.find(savedJob => savedJob.id === job.id)) {
+        this.savedJobs.push(job); // sdd the job to saved jobs
+      }
+    },
   },
   created() {
-    this.fetchJobs(); // Fetch jobs when component is created
+    this.fetchJobs(); 
   },
 };
 </script>
+
+
 
 <style>
 .nav {
@@ -172,35 +270,43 @@ export default {
 
 .main-content {
   display: flex;
-  width: 100%;
-  max-width: 1500px;
   margin-top: 20px;
+  margin-left: 10px;
 }
 
-.job-listings {
-  flex: 1;
-  padding: 20px;
-  margin-left: 0; /* Remove left margin */
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.job-details {
-  flex: 3; /* Increase the flex value to give more width */
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin: 0 20px;
-}
-
+.job-listings,
 .job-statuses {
   flex: 1;
   padding: 20px;
+  margin-right: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.empty-section {
+  flex: 2;
+  padding: 20px;
+  margin-right: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 50%; /* Adjust the width as needed */
+}
+
+.job-statuses-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.job-status {
+  flex: 1;
+  padding: 10px;
+}
+
+
+.section-title {
+  color: #333;
 }
 
 .details-card {
@@ -209,4 +315,90 @@ export default {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.job-info {
+  margin-top: 20px;
+}
+
+.job-description {
+  margin-top: 20px;
+}
+
+.job-actions {
+  margin-top: 20px;
+}
+
+.company-logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.saved-jobs {
+  flex: 1;
+  padding: 20px;
+  margin-right: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.saved-job-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.saved-job-card {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
 </style>

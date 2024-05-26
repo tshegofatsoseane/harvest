@@ -52,7 +52,7 @@ export default {
   padding: 10px;
   font-size: 1rem;
   border: none;
-  border-radius: 5px 0 0 5px; /* Rounded border on the left side */
+  border-radius: 5px 0 0 5px;
   outline: none;
 }
 
@@ -62,7 +62,7 @@ export default {
   color: #fff;
   background-color: #42b983;
   border: none;
-  border-radius: 0 5px 5px 0; /* Rounded border on the right side */
+  border-radius: 0 5px 5px 0;
   cursor: pointer;
   transition: background-color 0.3s ease;
   outline: none;
@@ -76,8 +76,8 @@ export default {
   padding: 10px;
   font-size: 1rem;
   border: none;
-  border-left: 1px solid #ddd; /* Add a separating line */
-  border-radius: 0 5px 5px 0; /* Rounded border on the right side */
+  border-left: 1px solid #ddd; 
+  border-radius: 0 5px 5px 0; 
   cursor: pointer;
   outline: none;
 }

@@ -39,7 +39,7 @@
             </div>
           </div>
         </div>
-        <!-- Add other content here -->
+
       </div>
     </div>
   </template>

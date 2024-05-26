@@ -1,20 +1,25 @@
 <template>
   <div class="job-list">
     <div v-if="jobs.length === 0" class="no-jobs">No jobs found.</div>
-    <div v-for="job in jobs" :key="job.id" class="job-card" @click="selectJob(job)">
+    <div v-for="job in jobs" :key="job.id" class="job-card">
       <h3>{{ job.title }}</h3>
       <p>{{ job.company }}</p>
       <div class="job-details">
         <p class="location"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</p>
         <p class="type"><i class="fas fa-briefcase"></i> {{ job.type }}</p>
       </div>
-      <button
-        :class="['save-button', { saved: job.saved }]"
-        @click.stop="toggleSave(job)"
-      >
-        <i :class="job.saved ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
-        {{ job.saved ? 'Saved' : 'Save' }}
-      </button>
+      <div class="actions">
+        <button
+          :class="['save-button', { saved: job.saved }]"
+          @click.stop="toggleSave(job)"
+        >
+          <i :class="job.saved ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
+          {{ job.saved ? 'Saved' : 'Save' }}
+        </button>
+        <button class="view-details-button" @click="selectJob(job)">
+          View Details
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -33,11 +38,13 @@ export default {
   methods: {
     ...mapActions(['updateJob']),
     toggleSave(job) {
+      const newStatus = !job.saved;
       this.updateJob({
         jobId: job.id,
-        newStatus: job.status, // Keep status same if just toggling save
-        isSaved: !job.saved, 
+        newStatus,
+        isSaved: newStatus,
       });
+      this.$emit('jobSaved', job); // emit jobSaved event
     },
     selectJob(job) {
       this.$emit('selectJob', job);
@@ -93,6 +100,12 @@ export default {
   color: #42b983;
 }
 
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
 .save-button {
   display: flex;
   align-items: center;
@@ -121,6 +134,21 @@ export default {
 
 .save-button.saved i {
   color: #fff;
+}
+
+.view-details-button {
+  background-color: #42b983;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 14px;
+}
+
+.view-details-button:hover {
+  background-color: #36a270;
 }
 
 .no-jobs {
