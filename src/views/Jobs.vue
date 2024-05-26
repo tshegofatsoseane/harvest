@@ -36,7 +36,7 @@
           <h2>In Progress</h2>
           <JobList :jobs="inProgressJobs" @update-job="updateJob" />
         </section>
-        </div>
+      </div>
     </div>
 
   </div>

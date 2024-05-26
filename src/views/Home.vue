@@ -36,44 +36,47 @@
           <JobList :jobs="filteredJobs" @selectJob="selectJob" @jobSaved="handleJobSaved" />
         </section>
 
-        
+
 <!-- Empty Section -->
 <section class="empty-section">
+  
   <h2>Job Statuses</h2>
-  <div class="job-statuses-row">
-    <div class="job-status">
-      
-      <section class="saved-jobs">
-        <i class="fas fa-bookmark"></i>  <h2>Saved Jobs ({{ savedJobs.length }})</h2>
-          <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
+
+        <div class="sections">
+        <section class="job-section">
+          <h2>Saved <i class="fas fa-bookmark"></i></h2>
+          <div class="saved-job-cards">
+            <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
           <div v-else class="saved-job-cards">
             <div v-for="job in savedJobs" :key="job.id" class="saved-job-card">
               <h3>{{ job.title }}</h3>
               <p>Job ID: {{ job.id }}</p>
+              <button class="view-details-button" @click="selectJob(job)">
+          View Details
+        </button>
               <button @click="applyForJob(job)">Apply Now</button>
             </div>
           </div>
+          </div>
         </section>
+        <section class="job-section">
+          <h2>Applied  <i class="fas fa-check-circle"></i> </h2>
+          <JobList :jobs="appliedJobs" @update-job="updateJob" />
+        </section>
+        <section class="job-section">
+          <h2>In Progress <i class="fas fa-spinner"></i></h2>
+          <JobList :jobs="inProgressJobs" @update-job="updateJob" />
+        </section>
+      </div>
 
-    </div>
-    <div class="job-status">
-      <i class="fas fa-spinner"></i> In Progress: {{ jobStatusCount('in-progress') }}
-    </div>
-    <div class="job-status">
-      <i class="fas fa-check-circle"></i> Applied: {{ jobStatusCount('applied') }}
-    </div>
-    <div class="job-status">
-      <i class="fas fa-envelope"></i> Awaiting Response: {{ jobStatusCount('awaiting-response') }}
-    </div>
-  </div>
 </section>
 
 
         <!-- Job Statuses -->
-        <section class="job-statuses">
+      <section class="job-statuses">
           <h2>Job Statuses</h2>
           <ul>
-            <li><i class="fas fa-bookmark"></i> Saved: {{ jobStatusCount('saved') }}</li>
+            <li><i class="fas fa-bookmark"></i> Saved:({{ savedJobs.length }})</li>
             <li><i class="fas fa-spinner"></i> In Progress: {{ jobStatusCount('in-progress') }}</li>
             <li><i class="fas fa-check-circle"></i> Applied: {{ jobStatusCount('applied') }}</li>
             <li><i class="fas fa-envelope"></i> Awaiting Response: {{ jobStatusCount('awaiting-response') }}</li>
@@ -399,6 +402,20 @@ export default {
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
+}
+
+.sections {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.job-section {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+
 }
 
 </style>
