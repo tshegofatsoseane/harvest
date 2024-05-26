@@ -25,7 +25,29 @@
       <div class="main-content">
         <section class="job-listings">
           <h2>Job Listings</h2>
-          <JobList :jobs="filteredJobs" />
+          <JobList :jobs="filteredJobs" @selectJob="selectJob" />
+        </section>
+        <section class="job-details">
+          <h2>Job Details</h2>
+          <div v-if="selectedJob" class="details-card">
+            <h3>{{ selectedJob.title }}</h3>
+            <p><strong>Company:</strong> {{ selectedJob.company }}</p>
+            <p><strong>Location:</strong> {{ selectedJob.location }}</p>
+            <p><strong>Type:</strong> {{ selectedJob.type }}</p>
+            <p><strong>Description:</strong> {{ selectedJob.description }}</p>
+          </div>
+          <div v-else>
+            <p>Select a job to see the details.</p>
+          </div>
+        </section>
+        <section class="job-statuses">
+          <h2>Job Statuses</h2>
+          <ul>
+            <li>Saved: {{ jobStatusCount('saved') }}</li>
+            <li>In Progress: {{ jobStatusCount('in-progress') }}</li>
+            <li>Applied: {{ jobStatusCount('applied') }}</li>
+            <li>Awaiting Response: {{ jobStatusCount('awaiting-response') }}</li>
+          </ul>
         </section>
       </div>
     </div>
@@ -46,6 +68,7 @@ export default {
     return {
       jobs: [],
       filteredJobs: [],
+      selectedJob: null,
     };
   },
   methods: {
@@ -68,10 +91,17 @@ export default {
             company: job.company.display_name,
             location: job.location.display_name,
             type: job.contract_type,
+            description: job.description, // Assuming the API returns a description field
           }));
           this.filteredJobs = this.jobs; // Initialize filtered jobs with all jobs
         })
         .catch(error => console.error(error));
+    },
+    selectJob(job) {
+      this.selectedJob = job;
+    },
+    jobStatusCount(status) {
+      return this.jobs.filter(job => job.status === status).length;
     },
   },
   created() {
@@ -143,10 +173,40 @@ export default {
 .main-content {
   display: flex;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1500px;
+  margin-top: 20px;
 }
 
 .job-listings {
-  flex: 3;
+  flex: 1;
+  padding: 20px;
+  margin-left: 0; /* Remove left margin */
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.job-details {
+  flex: 3; /* Increase the flex value to give more width */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 0 20px;
+}
+
+.job-statuses {
+  flex: 1;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.details-card {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 </style>

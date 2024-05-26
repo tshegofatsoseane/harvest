@@ -1,14 +1,17 @@
 <template>
   <div class="job-list">
     <div v-if="jobs.length === 0" class="no-jobs">No jobs found.</div>
-    <div v-for="job in jobs" :key="job.id" class="job-card">
+    <div v-for="job in jobs" :key="job.id" class="job-card" @click="selectJob(job)">
       <h3>{{ job.title }}</h3>
       <p>{{ job.company }}</p>
       <div class="job-details">
         <p class="location"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</p>
         <p class="type"><i class="fas fa-briefcase"></i> {{ job.type }}</p>
       </div>
-      <button @click="toggleSaved(job)" class="save-button" :class="{ saved: job.saved }">
+      <button
+        :class="['save-button', { saved: job.saved }]"
+        @click.stop="toggleSave(job)"
+      >
         <i :class="job.saved ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
         {{ job.saved ? 'Saved' : 'Save' }}
       </button>
@@ -20,6 +23,7 @@
 import { mapActions } from 'vuex';
 
 export default {
+  name: 'JobList',
   props: {
     jobs: {
       type: Array,
@@ -28,12 +32,15 @@ export default {
   },
   methods: {
     ...mapActions(['updateJob']),
-    toggleSaved(job) {
+    toggleSave(job) {
       this.updateJob({
         jobId: job.id,
-        newStatus: job.status,
-        isSaved: !job.saved,
+        newStatus: job.status, // Keep status same if just toggling save
+        isSaved: !job.saved, 
       });
+    },
+    selectJob(job) {
+      this.$emit('selectJob', job);
     },
   },
 };
@@ -41,8 +48,8 @@ export default {
 
 <style scoped>
 .job-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 20px;
 }
 
@@ -52,6 +59,7 @@ export default {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .job-card:hover {
