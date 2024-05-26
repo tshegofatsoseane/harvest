@@ -37,39 +37,31 @@
         </section>
 
 
-<!-- Empty Section -->
-<section class="empty-section">
-  
-  <h2>Job Statuses</h2>
-
-        <div class="sections">
-        <section class="job-section">
-          <h2>Saved <i class="fas fa-bookmark"></i></h2>
-          <div class="saved-job-cards">
-            <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
-          <div v-else class="saved-job-cards">
-            <div v-for="job in savedJobs" :key="job.id" class="saved-job-card">
-              <h3>{{ job.title }}</h3>
-              <p>Job ID: {{ job.id }}</p>
-              <button class="view-details-button" @click="selectJob(job)">
-          View Details
-        </button>
-              <button @click="applyForJob(job)">Apply Now</button>
-            </div>
+        <section class="empty-section">
+          <h2>Job Statuses</h2>
+          <div class="sections">
+    <section class="job-section saved-jobs-section">
+      <h2>Saved <i class="fas fa-bookmark"></i></h2>
+      <div class="saved-job-cards">
+        <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
+        <div v-else class="saved-job-cards-container">
+          <div v-for="job in savedJobs" :key="job.id" class="saved-job-card" @click="selectJob(job)"> 
+            <span :title="job.title">{{ shortenTitle(job.title) }}</span>
           </div>
-          </div>
-        </section>
-        <section class="job-section">
-          <h2>Applied  <i class="fas fa-check-circle"></i> </h2>
-          <JobList :jobs="appliedJobs" @update-job="updateJob" />
-        </section>
-        <section class="job-section">
-          <h2>In Progress <i class="fas fa-spinner"></i></h2>
-          <JobList :jobs="inProgressJobs" @update-job="updateJob" />
-        </section>
+        </div>
       </div>
+    </section>
 
-</section>
+            <section class="job-section">
+              <h2>Applied  <i class="fas fa-check-circle"></i> </h2>
+              <JobList :jobs="appliedJobs" @update-job="updateJob" />
+            </section>
+            <section class="job-section">
+              <h2>In Progress <i class="fas fa-spinner"></i></h2>
+              <JobList :jobs="inProgressJobs" @update-job="updateJob" />
+            </section>
+          </div>
+        </section>
 
 
         <!-- Job Statuses -->
@@ -149,6 +141,13 @@ export default {
         (job.company?.toLowerCase() || '').includes(searchTerm.toLowerCase())
       );
     },
+    shortenTitle(title) {
+      const maxLength = 30; 
+      if (title.length > maxLength) {
+        return title.substring(0, maxLength) + "...";
+      }
+      return title;
+    },
     handleJobSaved(job) {
       // add job to savedJobs array only if it doesn't already exist (i may need to review this)
       if (!this.savedJobs.find(savedJob => savedJob.id === job.id)) {
@@ -199,13 +198,14 @@ export default {
     saveJob(job) {
       // check if the job is already saved
       if (!this.savedJobs.find(savedJob => savedJob.id === job.id)) {
-        this.savedJobs.push(job); // sdd the job to saved jobs
+        this.savedJobs.push(job);
       }
     },
   },
   created() {
     this.fetchJobs(); 
   },
+
 };
 </script>
 
@@ -294,7 +294,7 @@ export default {
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 50%; /* Adjust the width as needed */
+  width: 50%;
 }
 
 .job-statuses-row {
@@ -393,15 +393,30 @@ export default {
 }
 
 .saved-job-cards {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 
 .saved-job-card {
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 10px;             
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  background-color: #fff;
+  transition: all 0.3s ease; 
+  cursor: pointer;
+  margin-right: 20px;
+  margin-bottom: 20px; 
+}
+
+.saved-job-card:last-child { 
+  margin-right: 0;
+}
+
+.saved-job-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px); 
+  background-color: #f5f5f5;
 }
 
 .sections {
@@ -410,12 +425,38 @@ export default {
   gap: 20px;
 }
 
-.job-section {
-  flex: 1;
+.empty-section {
+  flex: 2;
+  padding: 20px;
+  margin-right: 20px;
   background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 50%; 
+}
+
+.empty-section h2{
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.job-section {
+  flex: 1 1 40%;
+  min-width: 280px;
+  background-color: #fff;
   padding: 20px;
   border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
+.saved-jobs-section { 
+  order: -1; 
 }
 
 </style>
