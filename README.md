@@ -1,4 +1,4 @@
-# harvest_frontend
+# harvest
 
 ## Project setup
 ```
