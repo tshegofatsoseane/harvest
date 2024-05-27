@@ -97,9 +97,11 @@
   
           if (response && response.data) {
             console.log(response.data);
+            // Store the token in localStorage
+            localStorage.setItem('token', response.data.access);
             alert('Sign in successful!');
-            // Redirect to homepage on successfull login
-            this.$router.push('/');
+            // Redirect to homepage on successful login
+            this.$router.push('/profile');
           } else {
             console.error('Unexpected response structure', response);
             alert('Sign in failed due to unexpected response structure.');
@@ -119,7 +121,6 @@
   </script>
   
   <style>
-  /* Styles are the same as you provided */
   .center-container {
     margin-top: -50px;
     display: flex;

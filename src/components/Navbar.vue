@@ -6,7 +6,6 @@
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/jobs">Jobs</router-link></li>
           <li><router-link to="/profile">Profile</router-link></li>
-          <!-- Add more navigation links as needed -->
         </ul>
       </div>
     </nav>
@@ -20,9 +19,9 @@
   
   <style scoped>
   .navbar {
-    background-color: #42b983; /* Updated background color */
+    background-color: #42b983; 
     color: #fff;
-    padding: 15px 0; /* Increased padding for better spacing */
+    padding: 15px 0; 
   }
   
   .container {
@@ -34,7 +33,8 @@
   }
   
   .logo {
-    font-size: 1.8rem; /* Increased font size */
+
+    font-size: 1.8rem;
     font-weight: bold;
     color: #fff;
     text-decoration: none;
@@ -48,7 +48,7 @@
   }
   
   .nav-links li {
-    margin-right: 30px; /* Increased margin between navigation items */
+    margin-right: 30px;
   }
   
   .nav-links li:last-child {
@@ -58,12 +58,14 @@
   .nav-links li a {
     color: #fff;
     text-decoration: none;
-    transition: color 0.3s; /* Added transition for smooth color change */
+
+    transition: color 0.3s; 
   }
   
   .nav-links li a:hover {
-    color: #fff; /* Keep the same color on hover */
-    opacity: 0.8; /* Reduced opacity on hover for visual effect */
+    color: #fff; 
+    opacity: 0.8; 
+
   }
   </style>
   

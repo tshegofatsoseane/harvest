@@ -5,9 +5,8 @@
         <label for="location" class="filter-label">Location:</label>
         <select id="location" v-model="filters.location" @change="onFilter" class="filter-select">
           <option value="">All</option>
-          <option value="New York">New York</option>
-          <option value="San Francisco">San Francisco</option>
-          <!-- Add more locations as needed -->
+          <option value="New York">Joburg</option>
+          <option value="San Francisco">Capetown</option>
         </select>
       </div>
       <div class="filter-group">
@@ -16,7 +15,6 @@
           <option value="">All</option>
           <option value="Full-time">Full-time</option>
           <option value="Part-time">Part-time</option>
-          <!-- Add more job types as needed -->
         </select>
       </div>
     </div>
