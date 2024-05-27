@@ -342,6 +342,7 @@ export default {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+
 .empty-section {
   flex: 2;
   padding: 20px;
@@ -462,11 +463,12 @@ export default {
   cursor: pointer;
   display: flex; 
   flex-direction: column; 
+  width: 270px;
+  margin-left: -5px;
 }
 
 .saved-job-card .card-content {
   align-items: center;
-  overflow: hidden; 
 }
 
 .saved-job-card .card-buttons {
@@ -599,7 +601,7 @@ export default {
 .popover button {
   display: block;
   width: 100%;
-  background-color: #f5f5f5;
+  background-color: green;
   border: none;
   padding: 8px;
   text-align: left; 
