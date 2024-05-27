@@ -33,7 +33,7 @@
         <!-- Job Listings -->
         <section class="job-listings">
           <h2>Job Listings</h2>
-          <JobList :jobs="filteredJobs" @selectJob="selectJob" @jobSaved="handleJobSaved" />
+          <JobList :jobs="filteredJobs" @selectJob="selectJob" @jobSaved="handleJobSaved" @jobinProgress="handleJobinProgress" />
         </section>
 
 
@@ -41,12 +41,52 @@
           <h2>Job Statuses</h2>
           <div class="sections">
 
-<section class="job-section saved-jobs-section">
+            <section class="job-section saved-jobs-section">
   <h2>Saved <i class="fas fa-bookmark"></i></h2>
   <div class="saved-job-cards">
     <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
     <div v-else class="saved-job-cards-container">
       <div v-for="job in savedJobs" :key="job.id" class="saved-job-card">
+        <div class="card-content">
+          <h3><span :title="job.title">{{ shortenTitle(job.title) }}</span></h3>
+          <p>{{ job.company }}</p>
+          <div class="card-buttons">
+            <button class="icon-button" @click="selectJob(job)">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="icon-button" @click.stop="showDeleteConfirmation(job)">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="icon-button" @click="togglePopover(job)">
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+          </div>
+        </div>
+        <div v-if="job === showPopoverForJob" class="popover">
+          <button @click="updateJobStatus(job, 'applied')">Applied</button>
+          <button @click="handleJobinProgress(job)">In Progress</button>
+          <button @click="updateJobStatus(job, 'awaiting-response')">Awaiting Response</button>
+          <button @click="updateJobStatus(job, 'interview')">Interview</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<div v-if="showDeleteModal" class="modal">
+  <div class="modal-content">
+    <p>Are you sure you want to delete this saved job?</p>
+    <button @click="deleteSavedJob">Yes</button>
+    <button @click="showDeleteModal = false">No</button>
+  </div>
+</div>
+    <section class="job-section inprogress-jobs-section">
+    <h2>In Progress <i class="fas fa-spinner"></i></h2>
+    <div v-if="inprogressJobs.length === 0" class="no-jobs"  @jobSaved="handleJobSaved" >No saved jobs yet.</div>
+    <div v-else class="saved-job-cards-container">
+      <div v-for="job in inprogressJobs" :key="job.id" class="saved-job-card">
         <div class="card-content">
           <h3> <span :title="job.title">{{ shortenTitle(job.title) }}</span> </h3>
           <p>{{ job.company }}</p>
@@ -64,26 +104,14 @@
         </div>
         <div v-if="job === showPopoverForJob" class="popover">
           <button @click="updateJobStatus(job, 'applied')">Applied</button>
-          <button @click="updateJobStatus(job, 'in-progress')">In Progress</button>
+          <button @click="handleJobinProgress(job)">In Progress</button>
           <button @click="updateJobStatus(job, 'awaiting-response')">Awaiting Response</button>
           <button @click="updateJobStatus(job, 'interview')">Interview</button>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<div v-if="showDeleteModal" class="modal">
-  <div class="modal-content">
-    <p>Are you sure you want to delete this saved job?</p>
-    <button @click="deleteSavedJob">Yes</button>
-    <button @click="showDeleteModal = false">No</button>
-  </div>
-</div>
-            <section class="job-section inprogress-jobs-section">
-              <h2>In Progress <i class="fas fa-spinner"></i></h2>
-              <JobList :jobs="inProgressJobs" @update-job="updateJob" />
             </section>
+            
             <section class="job-section applied-jobs-section">
               <h2>Applied  <i class="fas fa-check-circle"></i> </h2>
               <JobList :jobs="appliedJobs" @update-job="updateJob" />
@@ -145,6 +173,7 @@ export default {
       jobs: [],
       filteredJobs: [],
       savedJobs: [], //array to store saved jobs
+      inprogressJobs: [], //array to store inprogress jobs
       selectedJob: null,
       showModal: false,
       showDeleteModal: false,
@@ -154,7 +183,16 @@ export default {
   },
   computed: {
     computed: {
-    ...mapState(['jobs', 'savedJobs', 'filteredJobs']),
+    ...mapState(['jobs', 'savedJobs', 'inprogressJobs',  'filteredJobs']),
+    toggleprogress(job) {
+      const newStatus = !job.progressed;
+      this.updateJob({
+        jobId: job.id,
+        newStatus,
+        isInprogress: newStatus,
+      });
+      this.$emit('jobinProgress', job); // emit jobinProgress event
+    }
   },
     appliedJobs() {
       return this.jobs.filter(job => job.status === 'applied');
@@ -174,7 +212,11 @@ export default {
       job.status = newStatus;
       this.$store.commit('updateJob', job);
       this.togglePopover(job); // Close popover after updating status
-      // I'll add logic to close popover if status not updated
+
+      if (newStatus === 'in-progress') {
+      this.inProgressJobs.push(job);
+      this.savedJobs = this.savedJobs.filter(j => j.id !== job.id);
+    } 
     },
     showDeleteConfirmation(job) {
       this.jobToDelete = job;
@@ -207,6 +249,13 @@ export default {
       // add job to savedJobs array only if it doesn't already exist (i may need to review this)
       if (!this.savedJobs.find(savedJob => savedJob.id === job.id)) {
         this.savedJobs.push(job);
+      }
+    },
+    handleJobinProgress(job) {
+      if (!this.inprogressJobs.find(inprogressJob => inprogressJob.id === job.id)) {
+        this.inprogressJobs.push(job);
+        this.savedJobs.pop(job);
+        this.togglePopover(job);
       }
     },
     applyForJob(job) {
@@ -254,6 +303,13 @@ export default {
       // check if the job is already saved
       if (!this.savedJobs.find(savedJob => savedJob.id === job.id)) {
         this.savedJobs.push(job);
+      }
+    },
+    inprogressJob(job) {
+      // check if the job is already inprogress
+      if (!this.inprogressJobs.find(inprogressJob => inprogressJob.id === job.id)) {
+        this.inprogressJobs.push(job);
+        this.togglePopover(job);
       }
     },
   },

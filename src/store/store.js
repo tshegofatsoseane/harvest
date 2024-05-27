@@ -6,6 +6,8 @@ const apiUrl = 'http://127.0.0.1:8000/api/jobs/';
 export default createStore({
   state: {
     jobs: [],
+    savedJobs: [],
+    inprogressJobs: []
   },
   mutations: {
     setJobs(state, jobs) {
@@ -33,6 +35,13 @@ export default createStore({
         })
         .catch(error => console.error(error));
     },
+    progressJob({ dispatch }, job) {
+        axios.post(apiUrl, job)
+          .then(() => {
+            dispatch('fetchJobs');
+          })
+          .catch(error => console.error(error));
+      },
     updateJobStatus({ dispatch }, { id, status }) {
       axios.post(`${apiUrl}${id}/update_status/`, { status })
         .then(() => {
@@ -42,3 +51,4 @@ export default createStore({
     },
   },
 });
+
