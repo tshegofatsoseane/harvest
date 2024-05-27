@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-!23#(2^-&i$jmujlx=^_wqpprz=!6wqfn1a=7=1!xw!g9r%gce
 DEBUG = True
 
 ALLOWED_HOSTS = []
+CORS_ALLOWED_ORIGINS = ['http://localhost:8080'] 
 
 
 # Application definition
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders', 
     'rest_framework_simplejwt.token_blacklist',  # Add Simple JWT
     'apps.accounts',
     'apps.documents',
@@ -72,6 +74,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
