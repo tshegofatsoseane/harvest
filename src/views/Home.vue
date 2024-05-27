@@ -36,19 +36,18 @@
           <JobList :jobs="filteredJobs" @selectJob="selectJob" @jobSaved="handleJobSaved" @jobinProgress="handleJobinProgress" />
         </section>
 
-
         <section class="empty-section">
           <h2>Job Statuses</h2>
           <div class="sections">
 
-            <section class="job-section saved-jobs-section">
+<section class="job-section saved-jobs-section">
   <h2>Saved <i class="fas fa-bookmark"></i></h2>
   <div class="saved-job-cards">
     <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
     <div v-else class="saved-job-cards-container">
       <div v-for="job in savedJobs" :key="job.id" class="saved-job-card">
         <div class="card-content">
-          <h3><span :title="job.title">{{ shortenTitle(job.title) }}</span></h3>
+          <h3> <span :title="job.title">{{ shortenTitle(job.title) }}</span> </h3>
           <p>{{ job.company }}</p>
           <div class="card-buttons">
             <button class="icon-button" @click="selectJob(job)">
@@ -64,10 +63,10 @@
         </div>
         <div v-if="job === showPopoverForJob" class="popover">
           <button @click="updateJobStatus(job, 'applied')">Applied</button>
-          <button @click="handleJobinProgress(job)">In Progress</button>
+          <button @click="handleJobinProgress(job, 'in-progress')">In Progress</button>
           <button @click="updateJobStatus(job, 'awaiting-response')">Awaiting Response</button>
           <button @click="updateJobStatus(job, 'interview')">Interview</button>
-        </div>
+        </div> 
       </div>
     </div>
   </div>
@@ -82,6 +81,7 @@
     <button @click="showDeleteModal = false">No</button>
   </div>
 </div>
+
     <section class="job-section inprogress-jobs-section">
     <h2>In Progress <i class="fas fa-spinner"></i></h2>
     <div v-if="inprogressJobs.length === 0" class="no-jobs"  @jobSaved="handleJobSaved" >No saved jobs yet.</div>
@@ -104,7 +104,7 @@
         </div>
         <div v-if="job === showPopoverForJob" class="popover">
           <button @click="updateJobStatus(job, 'applied')">Applied</button>
-          <button @click="handleJobinProgress(job)">In Progress</button>
+          <button @click="handleJobinProgress(job, 'in-progress')">In Progress</button>
           <button @click="updateJobStatus(job, 'awaiting-response')">Awaiting Response</button>
           <button @click="updateJobStatus(job, 'interview')">Interview</button>
         </div>
@@ -158,9 +158,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import Hero from '@/components/Hero.vue';
 import JobList from '@/components/JobList.vue';
+
 
 export default {
   name: 'HomePage',
@@ -184,6 +185,7 @@ export default {
   computed: {
     computed: {
     ...mapState(['jobs', 'savedJobs', 'inprogressJobs',  'filteredJobs']),
+    ...mapActions(['updateJob']),
     toggleprogress(job) {
       const newStatus = !job.progressed;
       this.updateJob({
@@ -212,6 +214,7 @@ export default {
       job.status = newStatus;
       this.$store.commit('updateJob', job);
       this.togglePopover(job); // Close popover after updating status
+      // I'll add logic to close popover if status not updated
 
       if (newStatus === 'in-progress') {
       this.inProgressJobs.push(job);
@@ -251,13 +254,19 @@ export default {
         this.savedJobs.push(job);
       }
     },
-    handleJobinProgress(job) {
-      if (!this.inprogressJobs.find(inprogressJob => inprogressJob.id === job.id)) {
+
+    handleJobinProgress(job, newStatus) {
+      // add job to inprogress array
+      if (!this.inprogressJobs.find(inProgressJob => inProgressJob.id === job.id)) {
+        job.status = newStatus;
+        this.$store.commit('updateJob', job);
         this.inprogressJobs.push(job);
-        this.savedJobs.pop(job);
         this.togglePopover(job);
+        this.savedJobs.pop(job);
       }
     },
+  
+    
     applyForJob(job) {
       //i'll add logic to apply for a job later
       console.log(`Applying for job: ${job.title}`);
@@ -305,11 +314,10 @@ export default {
         this.savedJobs.push(job);
       }
     },
-    inprogressJob(job) {
+    inProgressJob(job) {
       // check if the job is already inprogress
-      if (!this.inprogressJobs.find(inprogressJob => inprogressJob.id === job.id)) {
-        this.inprogressJobs.push(job);
-        this.togglePopover(job);
+      if (!this.inProgressJobs.find(inProgressJob => inProgressJob.id === job.id)) {
+        this.inProgressJobs.push(job);
       }
     },
   },
@@ -666,3 +674,4 @@ export default {
 }
 
 </style>
+
