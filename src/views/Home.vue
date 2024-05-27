@@ -40,26 +40,55 @@
         <section class="empty-section">
           <h2>Job Statuses</h2>
           <div class="sections">
-    <section class="job-section saved-jobs-section">
-      <h2>Saved <i class="fas fa-bookmark"></i></h2>
-      <div class="saved-job-cards">
-        <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
-        <div v-else class="saved-job-cards-container">
-          <div v-for="job in savedJobs" :key="job.id" class="saved-job-card" @click="selectJob(job)"> 
-            <span :title="job.title">{{ shortenTitle(job.title) }}</span>
+
+<section class="job-section saved-jobs-section">
+  <h2>Saved <i class="fas fa-bookmark"></i></h2>
+  <div class="saved-job-cards">
+    <div v-if="savedJobs.length === 0" class="no-jobs">No saved jobs yet.</div>
+    <div v-else class="saved-job-cards-container">
+      <div v-for="job in savedJobs" :key="job.id" class="saved-job-card">
+        <div class="card-content">
+          <h3> <span :title="job.title">{{ shortenTitle(job.title) }}</span> </h3>
+          <p>{{ job.company }}</p>
+          <div class="card-buttons">
+            <button class="icon-button" @click="selectJob(job)">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="icon-button" @click.stop="showDeleteConfirmation(job)">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="icon-button" @click="togglePopover(job)">
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
           </div>
         </div>
+        <div v-if="job === showPopoverForJob" class="popover">
+          <button @click="updateJobStatus(job, 'applied')">Applied</button>
+          <button @click="updateJobStatus(job, 'in-progress')">In Progress</button>
+          <button @click="updateJobStatus(job, 'awaiting-response')">Awaiting Response</button>
+          <button @click="updateJobStatus(job, 'interview')">Interview</button>
+        </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-            <section class="job-section">
-              <h2>Applied  <i class="fas fa-check-circle"></i> </h2>
-              <JobList :jobs="appliedJobs" @update-job="updateJob" />
-            </section>
-            <section class="job-section">
+<div v-if="showDeleteModal" class="modal">
+  <div class="modal-content">
+    <p>Are you sure you want to delete this saved job?</p>
+    <button @click="deleteSavedJob">Yes</button>
+    <button @click="showDeleteModal = false">No</button>
+  </div>
+</div>
+            <section class="job-section inprogress-jobs-section">
               <h2>In Progress <i class="fas fa-spinner"></i></h2>
               <JobList :jobs="inProgressJobs" @update-job="updateJob" />
             </section>
+            <section class="job-section applied-jobs-section">
+              <h2>Applied  <i class="fas fa-check-circle"></i> </h2>
+              <JobList :jobs="appliedJobs" @update-job="updateJob" />
+            </section>
+
           </div>
         </section>
 
@@ -118,6 +147,9 @@ export default {
       savedJobs: [], //array to store saved jobs
       selectedJob: null,
       showModal: false,
+      showDeleteModal: false,
+      jobToDelete: null,
+      showPopoverForJob: null,
     };
   },
   computed: {
@@ -135,6 +167,29 @@ export default {
     },
   },
   methods: {
+    togglePopover(job) {
+      this.showPopoverForJob = this.showPopoverForJob === job ? null : job;
+    },
+    updateJobStatus(job, newStatus) {
+      job.status = newStatus;
+      this.$store.commit('updateJob', job);
+      this.togglePopover(job); // Close popover after updating status
+      // I'll add logic to close popover if status not updated
+    },
+    showDeleteConfirmation(job) {
+      this.jobToDelete = job;
+      this.showDeleteModal = true;
+    },
+    deleteSavedJob() {
+      if (this.jobToDelete) {
+        const index = this.savedJobs.indexOf(this.jobToDelete);
+        if (index > -1) {
+          this.savedJobs.splice(index, 1);
+        }
+        this.showDeleteModal = false;
+        this.jobToDelete = null;
+      }
+    },
     handleSearch(searchTerm) {
       this.filteredJobs = this.jobs.filter(job =>
         (job.title?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
@@ -364,7 +419,7 @@ export default {
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 30%;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -400,13 +455,41 @@ export default {
 
 .saved-job-card {
   padding: 20px;
-  border-radius: 10px;             
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  transition: all 0.3s ease; 
+  transition: transform 0.3s ease;
   cursor: pointer;
-  margin-right: 20px;
-  margin-bottom: 20px; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+.saved-job-card .card-content {
+  align-items: center;
+  overflow: hidden; 
+}
+
+.saved-job-card .card-buttons {
+  display: flex; 
+}
+
+.saved-job-card .icon-button {
+  background-color: white;
+  border: 2px solid #388e3c;
+  color: #388e3c;
+  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.saved-job-card .icon-button:hover {
+  background-color: #f0f0f0;
 }
 
 .saved-job-card:last-child { 
@@ -414,9 +497,17 @@ export default {
 }
 
 .saved-job-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  transform: translateY(-3px); 
-  background-color: #f5f5f5;
+  transform: translateY(-5px);
+}
+
+.saved-job-card h3 {
+  margin: 0 0 10px;
+  color: #333;
+}
+
+.saved-job-card p {
+  margin: 5px 0;
+  color: #666;
 }
 
 .sections {
@@ -457,6 +548,63 @@ export default {
 
 .saved-jobs-section { 
   order: -1; 
+  background-color: #fff; 
+  border-radius: 10px; 
+}
+
+.saved-jobs-section h2 {
+  color: #388e3c; 
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.inprogress-jobs-section h2 {
+  color: #388e3c; 
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.applied-jobs-section h2 {
+  color: #388e3c; 
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.saved-job-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+  gap: 20px;
+}
+
+.popover {
+  position: absolute;
+  top: 100%; 
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  z-index: 10;
+}
+
+.popover button {
+  display: block;
+  width: 100%;
+  background-color: #f5f5f5;
+  border: none;
+  padding: 8px;
+  text-align: left; 
+  cursor: pointer;
+  margin-bottom: 5px;
 }
 
 </style>

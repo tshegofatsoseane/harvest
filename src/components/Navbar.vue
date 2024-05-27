@@ -34,7 +34,7 @@
   }
   
   .logo {
-    font-size: 1.8rem; /* Increased font size */
+    font-size: 1.8rem;
     font-weight: bold;
     color: #fff;
     text-decoration: none;

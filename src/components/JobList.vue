@@ -11,8 +11,7 @@
       <div class="actions">
         <button
           :class="['save-button', { saved: job.saved }]"
-          @click.stop="toggleSave(job)"
-        >
+          @click.stop="toggleSave(job)">
           <i :class="job.saved ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
           {{ job.saved ? 'Saved' : 'Save' }}
         </button>
