@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
 
+import { mapActions } from 'vuex';
 export default {
   name: 'JobList',
   props: {
@@ -34,6 +34,7 @@ export default {
       required: true,
     },
   },
+
   methods: {
     ...mapActions(['updateJob']),
     toggleSave(job) {
@@ -93,12 +94,10 @@ export default {
   font-weight: bold;
   text-transform: uppercase;
 }
-
 .job-details i {
   margin-right: 5px;
   color: #42b983;
 }
-
 .actions {
   display: flex;
   justify-content: space-between;

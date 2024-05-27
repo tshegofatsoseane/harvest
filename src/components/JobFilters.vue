@@ -7,7 +7,6 @@
           <option value="">All</option>
           <option value="New York">Joburg</option>
           <option value="San Francisco">Capetown</option>
-     
         </select>
       </div>
       <div class="filter-group">
@@ -16,7 +15,6 @@
           <option value="">All</option>
           <option value="Full-time">Full-time</option>
           <option value="Part-time">Part-time</option>
-       
         </select>
       </div>
     </div>

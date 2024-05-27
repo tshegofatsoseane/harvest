@@ -6,7 +6,6 @@
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/jobs">Jobs</router-link></li>
           <li><router-link to="/profile">Profile</router-link></li>
-       
         </ul>
       </div>
     </nav>
@@ -34,6 +33,7 @@
   }
   
   .logo {
+
     font-size: 1.8rem;
     font-weight: bold;
     color: #fff;
@@ -58,12 +58,14 @@
   .nav-links li a {
     color: #fff;
     text-decoration: none;
+
     transition: color 0.3s; 
   }
   
   .nav-links li a:hover {
     color: #fff; 
     opacity: 0.8; 
+
   }
   </style>
   

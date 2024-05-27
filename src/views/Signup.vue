@@ -121,12 +121,6 @@
   </script>
   
   <style>
-  /* Styles are the same as you provided */
-  </style>
-  
-  
-  <style>
-  /* Styles are the same as you provided */
   .center-container {
     margin-top: -50px;
     display: flex;
