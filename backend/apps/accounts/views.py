@@ -1,3 +1,5 @@
+#accounts/views.py
+
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated

@@ -7,9 +7,27 @@ from .models import Profile
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', required=False)
+    email = serializers.EmailField(source='user.email', required=False)
+
     class Meta:
         model = Profile
-        fields = ['bio', 'location', 'birth_date']
+        fields = ['username', 'email', 'bio', 'location', 'birth_date']
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+        username = user_data.get('username')
+        email = user_data.get('email')
+
+        instance.user.username = username if username else instance.user.username
+        instance.user.email = email if email else instance.user.email
+        instance.user.save()
+
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.location = validated_data.get('location', instance.location)
+        instance.birth_date = validated_data.get('birth_date', instance.birth_date)
+        instance.save()
+        return instance
 
 
 class LoginSerializer(serializers.Serializer):
