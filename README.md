@@ -6,7 +6,7 @@ Harvest is a web application designed to streamline the job search process. It p
 
 ## Features
 
-- **Job Search:** Search for jobs from various sources (currently using the Adzuna API) using keywords, location, and job type filters.
+- **Job Search:** Search for jobs from various sources (currently using the Adzuna API) using keywords.
 - **Save Jobs:**  Save interesting job listings for later review.
 - **Track Applications:** Keep track of your applications in different stages: Saved, Applied, In Progress.
 - **User Profile:** Manage your profile information, including bio, location, and experience.
