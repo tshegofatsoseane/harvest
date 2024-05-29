@@ -7,4 +7,4 @@ class JobSerializer(serializers.Serializer):
     location = serializers.CharField(source='location.display_name')
     description = serializers.CharField()
     category = serializers.CharField(source='category.label')
-    created = serializers.DateTimeField()
+    created = serializers.DateTimeField()   # Remove source='created'
