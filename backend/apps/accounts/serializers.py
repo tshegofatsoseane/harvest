@@ -19,15 +19,28 @@ class ProfileSerializer(serializers.ModelSerializer):
         username = user_data.get('username')
         email = user_data.get('email')
 
-        instance.user.username = username if username else instance.user.username
-        instance.user.email = email if email else instance.user.email
+        if username:
+            instance.user.username = username
+        if email:
+            instance.user.email = email
         instance.user.save()
-
+        
         instance.bio = validated_data.get('bio', instance.bio)
         instance.location = validated_data.get('location', instance.location)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
         instance.save()
         return instance
+    
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'email')
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
 
 class LoginSerializer(serializers.Serializer):
@@ -50,13 +63,3 @@ class LoginSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError('Must include "username" and "password".')
 
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = ('username', 'password', 'email')
-
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
