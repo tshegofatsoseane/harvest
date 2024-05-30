@@ -44,7 +44,7 @@ Harvest is a web application designed to streamline the job search process. It p
 1. **Clone the Repository:**
 
    ```bash
-   git clone [invalid URL removed]
+   git clone https://github.com/tshegofatsoseane/harvest
    cd harvest
 
 ## Project setup
