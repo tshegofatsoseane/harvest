@@ -13,11 +13,13 @@ Harvest is a web application designed to streamline the job search process. It p
 - **Clean and Intuitive UI:**  A modern and user-friendly interface for an efficient job search experience.
 
 ## Screenshots 
+
+**Signup or login**
+![Image of Signup/login page](Signup:login.png) 
+
+**Homepage**
 ![Image of Home page](Home.png) 
-[Image of search bar]
-[Image of job listings]
-[Image of filters]
-[Image of profile page]
+
 
 ## Technologies Used
 
