@@ -48,7 +48,7 @@ Harvest is a web application designed to streamline the job search process. It p
    cd harvest/backend    # Navigate to the backend directory
 
 2. Set up a virtual environment:
-    ```bash
+
         python3 -m venv env
 
 
