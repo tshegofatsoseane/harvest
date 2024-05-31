@@ -53,7 +53,7 @@ Harvest is a web application designed to streamline the job search process. It p
 
 
 3. Activate your virtual environment:
-    ```bash
+
         source env/bin/activate
 
 
