@@ -106,6 +106,8 @@ npm run build
 npm run lint
 ```
 
+The vue.js should now be running locally at http://localhost:8080/.
+
 ## Third-Party Licenses
 
 This project utilizes the following third-party libraries and APIs:
