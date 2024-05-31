@@ -48,6 +48,11 @@ Harvest is a web application designed to streamline the job search process. It p
    cd harvest/backend    # Navigate to the backend directory
    pip install -r requirements.txt
 
+2. **Install dependencies:**
+
+   ```bash
+   pip install -r requirements.txt
+
 
 ## Project setup
 ```
