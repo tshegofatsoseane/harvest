@@ -13,7 +13,7 @@ Harvest is a web application designed to streamline the job search process. It p
 - **Clean and Intuitive UI:**  A modern and user-friendly interface for an efficient job search experience.
 
 ## Screenshots 
-[Home]
+![Image Description](path/to/your/image.png)
 [Image of search bar]
 [Image of job listings]
 [Image of filters]
@@ -63,7 +63,6 @@ Harvest is a web application designed to streamline the job search process. It p
 
 
 6. Create a .env file and set necessary secret keys below:
-
 
 7. Apply migrations to create the database schema:
 
