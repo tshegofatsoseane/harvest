@@ -46,13 +46,36 @@ Harvest is a web application designed to streamline the job search process. It p
    ```bash
    git clone https://github.com/tshegofatsoseane/harvest
    cd harvest/backend    # Navigate to the backend directory
-   pip install -r requirements.txt
 
-2. **Install dependencies:**
+2. Set up a virtual environment:
+    ```bash
+        python3 -m venv env
 
-   ```bash
-   pip install -r requirements.txt
 
+3. Activate your virtual environment:
+    ```bash
+        source env/bin/activate
+
+
+5. Install the Python dependencies:
+
+        pip install -r requirements.txt
+
+
+6. Create a .env file and set necessary secret keys below:
+
+
+7. Apply migrations to create the database schema:
+
+        python3 manage.py migrate
+
+
+8. Start the development server: 
+ ```
+ python3 manage.py runserver
+ ```
+
+The API should now be running locally at [http://localhost:8000/](http://localhost:8000/).
 
 ## Project setup
 ```
