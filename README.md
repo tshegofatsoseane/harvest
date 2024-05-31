@@ -46,12 +46,7 @@ Harvest is a web application designed to streamline the job search process. It p
    ```bash
    git clone https://github.com/tshegofatsoseane/harvest
    cd harvest/backend    # Navigate to the backend directory
-
- 1. **Setup backend:**
-
-   ```bash
    pip install -r requirements.txt
-   
 
 
 ## Project setup
