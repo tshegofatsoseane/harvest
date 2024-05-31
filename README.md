@@ -69,11 +69,10 @@ Harvest is a web application designed to streamline the job search process. It p
 
         python3 manage.py migrate
 
-
 8. Start the development server: 
- ```
- python3 manage.py runserver
- ```
+     ```
+     python3 manage.py runserver
+     ```
 
 The API should now be running locally at [http://localhost:8000/](http://localhost:8000/).
 
