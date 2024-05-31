@@ -77,28 +77,32 @@ Harvest is a web application designed to streamline the job search process. It p
 
 The API should now be running locally at [http://localhost:8000/](http://localhost:8000/).
 
+
+
 ## Frontend setup
 
 1. **Navigate to the frontend directory**
 
    ```bash
-   cd harvest/frontend_harvest_frontend 
+   cd harvest/frontend_harvest_frontend
+
+2. **Install frontend dependencies**
 
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+3. **Compiles and hot-reloads for development**
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+4. **Compiles and minifies for production**
 ```
 npm run build
 ```
 
-### Lints and fixes files
+4. **Lints and fixes files**
 ```
 npm run lint
 ```
